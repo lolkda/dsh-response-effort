@@ -34,7 +34,13 @@ Status: implemented
 
 npm 账号 `lolkda` 完成网页登录与发布二次验证，首次 `0.2.1` 发布命令成功。npm 非交互发布遇到 EOTP 时不会完成网页验证；本次通过交互终端取得官方验证链接，由维护者在浏览器确认后完成，不收集密码或 OTP。
 
-Trusted Publisher 绑定以及无 npm token 的 `0.2.2` 标签发布尚待完成，尚不宣称 OIDC 实际发布成功。
+维护者已完成 Trusted Publisher 绑定。[OIDC 标签发布运行 37716334426](https://github.com/lolkda/dsh-response-effort/actions/runs/37716334426)成功：标签 `v0.2.2` 指向 `97ea01df41ed58dd5a67345a43834b43f3e6e8c6`，GitHub-hosted runner 上 48 项测试和所有发布步骤通过，日志返回 `+ dsh-response-effort@0.2.2`。Actions secrets 为空；setup-node 注入的 `NODE_AUTH_TOKEN` 是其无凭据占位值，不是维护者发布 token。
+
+npm registry 已能读取 `0.2.1` 和 `0.2.2`，`latest` 为 `0.2.2`。实际下载的 0.2.2 tarball SHA-512 与 registry integrity 一致，SHA-1 为 `796ceda2dc040e6b5ada683a01e76bfeb5d7debb`，与 Actions 发布日志一致。22 个包文件与本地校验包逐一对比，文件路径和内容字节全部相同；本地原始文件的 0600 与 GitHub 检出的 0644 权限使两份 tarball 总哈希不同，不能把本地归档哈希误当作 CI 发布包哈希。
+
+GitHub 仓库保持 private，没有 provenance。首次发布的临时 npm CLI 登录已 logout 撤销，Git 元数据内的认证文件已删除。首次发布成功后 registry 曾短暂返回 404，等待其处理完成后读取成功，没有重复发布相同版本。
+
+Git HTTPS 推送标签两次连接超时后，使用 GitHub Git Database API 创建同提交的注解标签及 tag ref；本地标签同步为 API 规范化的同一对象，GitHub 实际收到 push 事件并运行上述工作流。未修改远端地址、全局网络策略或发布版本。
 
 ## Consequences
 
