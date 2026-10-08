@@ -1,0 +1,34 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { Context } from '@deepseek-ai/cordis';
+import TypertRegistry from '@deepseek-ai/dsh-typert-registry';
+import { TypertGatewayService } from '@deepseek-ai/dsh-api-gateway';
+import SessionStore, { SessionId } from '@deepseek-ai/dsh-session';
+import { EffortRemote } from '../src/host/remote.ts';
+import { EffortCache } from '../src/host/cache.ts';
+import { DEFAULT_LIMITS } from '../src/contracts.ts';
+import { decodeSnapshot } from '../src/remote-contract.ts';
+
+test('native Gateway streams snapshots through Session lookup and respects its access policy', async t => {
+  const ctx = new Context(); t.after(() => ctx.fiber.dispose());
+  await ctx.plugin(TypertRegistry); await ctx.plugin(SessionStore); await ctx.plugin(TypertGatewayService, {});
+  const allowed = ctx.sessions.create(SessionId('allowed'));
+  const denied = ctx.sessions.create(SessionId('denied'));
+  const cache = new EffortCache(DEFAULT_LIMITS);
+  cache.put(String(allowed.id), { messageId: 'm', provider: 'p', model: 'model', observedAt: 1, result: { kind: 'observed', effort: 'max', terminal: 'completed' } });
+  cache.put(String(denied.id), { messageId: 'secret-message', provider: 'p', model: 'model', observedAt: 1, result: { kind: 'observed', effort: 'secret', terminal: 'completed' } });
+  await ctx.plugin({ name: 'effort-test-service', apply(context: Context) { new EffortRemote(context, cache); } });
+  const abort = new AbortController();
+  const stream = await ctx.typertGateway.stream({ namespace: 'responseEffort', method: 'watch', args: { sessionId: allowed.id }, signal: abort.signal });
+  const iterator = stream[Symbol.asyncIterator]();
+  const initial = await iterator.next();
+  assert.equal(decodeSnapshot(initial.value).items[0]?.messageId, 'm');
+  assert.ok(!JSON.stringify(initial.value).includes('secret'));
+  cache.reset(); assert.equal(decodeSnapshot((await iterator.next()).value).items.length, 0);
+  abort.abort(); await iterator.return?.();
+  await assert.rejects(ctx.typertGateway.stream({ namespace: 'responseEffort', method: 'watch', args: { sessionId: 'missing' } }));
+  await assert.rejects(ctx.typertGateway.stream({ namespace: 'responseEffort', method: 'watch', args: { sessionId: allowed.id, unexpected: true } }));
+  const restore = ctx.typert.lookups.configure('session', id => id === allowed.id ? allowed : undefined);
+  await assert.rejects(ctx.typertGateway.stream({ namespace: 'responseEffort', method: 'watch', args: { sessionId: denied.id } }));
+  await restore(); cache.dispose();
+});

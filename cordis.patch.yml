@@ -1,0 +1,6 @@
+- insert:
+    - id: response-effort
+      name: dsh-response-effort
+      config:
+        enabled: false
+        targets: []
