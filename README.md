@@ -4,7 +4,7 @@
 
 ## 兼容范围
 
-- 插件 `0.2.1`；DSH `0.2.0-rc.2`，Node.js 24+，Web 客户端。
+- 插件 `0.2.2`；DSH `0.2.0-rc.2`，Node.js 24+，Web 客户端。
 - 仅 POST Responses SSE，读取 `response.completed`、`response.incomplete`、`response.failed`。
 - 可用于通过 Responses 协议提供的任意模型，不限定 OpenAI 模型。
 - 不支持 Chat Completions、Anthropic Messages、WebSocket、普通 JSON 响应。
@@ -17,7 +17,7 @@ npm ci --ignore-scripts
 npm run check
 npm pack --ignore-scripts
 # 将生成的 tgz 路径交给 DSH 原生管理器：
-dsh plugin --profile web add /absolute/path/dsh-response-effort-0.2.0.tgz --ignore-scripts
+dsh plugin --profile web add /absolute/path/dsh-response-effort-0.2.2.tgz --ignore-scripts
 ```
 
 bundle 默认 `enabled: false`、`targets: []`。安装后还需要在本插件配置中打开观测并明确白名单，例如：

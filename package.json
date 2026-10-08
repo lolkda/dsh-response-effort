@@ -1,6 +1,6 @@
 {
   "name": "dsh-response-effort",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Live per-response SSE effort history above the DSH composer, plus exact-message effort badges",
   "type": "module",
   "repository": {

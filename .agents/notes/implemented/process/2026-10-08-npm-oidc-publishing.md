@@ -30,7 +30,11 @@ Status: implemented
 
 本地 `npm run check` 通过：类型检查、Host/Client 构建、48 项测试和笔记门禁。新增 9 项发布测试覆盖有效标签、手动只检查、版本/锁文件不一致、错误发布目标及敏感或多余文件拒绝。实际 `npm pack` tarball 通过文件白名单检查。
 
-远端验收尚待完成：GitHub 干净检出安装、手动检查不发布、首次登录发布 0.2.1、Trusted Publisher 绑定，以及无 npm token 的 0.2.2 标签发布。工作流代码落地不代表这些外部操作已经成功。
+[手动检查运行 37714966303](https://github.com/lolkda/dsh-response-effort/actions/runs/37714966303)成功：GitHub 干净检出、锁文件安装、完整检查和实际打包通过；`Publish with OIDC` 步骤确认为 skipped。仓库 Actions secrets 列表为空。
+
+npm 账号 `lolkda` 完成网页登录与发布二次验证，首次 `0.2.1` 发布命令成功。npm 非交互发布遇到 EOTP 时不会完成网页验证；本次通过交互终端取得官方验证链接，由维护者在浏览器确认后完成，不收集密码或 OTP。
+
+Trusted Publisher 绑定以及无 npm token 的 `0.2.2` 标签发布尚待完成，尚不宣称 OIDC 实际发布成功。
 
 ## Consequences
 
