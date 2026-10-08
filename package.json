@@ -3,6 +3,15 @@
   "version": "0.2.1",
   "description": "Live per-response SSE effort history above the DSH composer, plus exact-message effort badges",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lolkda/dsh-response-effort.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/",
+    "provenance": false
+  },
   "engines": {
     "node": ">=24"
   },
@@ -22,7 +31,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "node scripts/build.mjs",
-    "test": "node --import tsx --test --test-concurrency=1 tests/*.test.ts tests/*.test.tsx",
+    "test": "node --import tsx --test --test-concurrency=1 tests/*.test.ts tests/*.test.tsx tests/*.test.mjs",
     "verify-notes": "node scripts/notes/verify-agent-note-tree.ts && node scripts/notes/verify-agent-note-format.ts && node scripts/notes/verify-archived-agent-notes.ts",
     "check": "npm run typecheck && npm run build && npm test && npm run verify-notes"
   },

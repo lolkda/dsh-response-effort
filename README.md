@@ -103,6 +103,38 @@ bundle 默认 `enabled: false`、`targets: []`。安装后还需要在本插件�
 
 Responses 的 `reasoning.summary` 本版不采集。`reasoning_tokens` 为 0 不能用来否认响应报告的 effort。
 
+## npm 发布（维护者）
+
+npm 包 `dsh-response-effort` 为公开包；GitHub 源仓库保持私有。公开包包含构建产物、声明文件及当前构建生成的 source maps，并不对这些内容保密。
+
+[发布工作流](.github/workflows/publish.yml)使用 GitHub-hosted runner、Node 24 与 npm 11.19.0，通过 OIDC 发布，不需要 `NPM_TOKEN` / `NODE_AUTH_TOKEN` secret。私有源仓库不支持 npm provenance，因此明确关闭 provenance；这不影响 OIDC 认证。
+
+首次发布需要维护者 `npm login --auth-type=web` 并手动发布当前版本，之后在 npm 包 Settings → Trusted Publisher 绑定：
+
+- Provider：GitHub Actions
+- Organization or user：`lolkda`
+- Repository：`dsh-response-effort`
+- Workflow filename：`publish.yml`（不是完整路径）
+- Environment name：留空
+- Allowed actions：启用直接 `npm publish`（仅允许 staged publish 不够）
+
+新建的 Trusted Publisher 必须在两天内完成首次成功发布。后续稳定版本发布：
+
+```sh
+npm version patch --no-git-tag-version
+# 同步本文兼容版本及安装示例后，运行完整检查并提交版本变化。
+npm run check
+git add package.json package-lock.json README.md
+git commit -m "Release <version>"
+git tag "v$(node -p 'require("./package.json").version')"
+git push origin main
+git push origin "v$(node -p 'require("./package.json").version')"
+```
+
+只有 `vX.Y.Z` 标签与包版本及锁文件一致时才发布；不支持通过此工作流发布 prerelease。工作流重新安装锁定依赖、完整检查、打包并验证文件白名单后，发布刚检查过的 tarball。已存在版本不能覆盖，失败时不会自动改版本或回退到长期 token。
+
+Actions 中手动运行 **Publish npm** 仅执行检查和打包，绝不发布；日常主分支推送不会触发 npm 发布。首次初始化流程为手动发布 0.2.1、绑定 Trusted Publisher、仅升级发布版本至 0.2.2 后运行一次真实 OIDC 发布。
+
 ## 开发与验证
 
 ```sh
