@@ -4,7 +4,8 @@
 
 ## 兼容范围
 
-- 插件 `0.2.2`；DSH `0.2.0-rc.2`，Node.js 24+，Web 客户端。
+- 插件 `0.2.3`；Node.js 24+，DSH Web 客户端。
+- 不设置 DSH peer 版本门禁，包括 alpha/rc 版本；这不等于承诺所有宿主版本兼容。开发与回归基线为 DSH `0.2.1-alpha.2`，升级宿主后仍需重新验收。
 - 仅 POST Responses SSE，读取 `response.completed`、`response.incomplete`、`response.failed`。
 - 可用于通过 Responses 协议提供的任意模型，不限定 OpenAI 模型。
 - 不支持 Chat Completions、Anthropic Messages、WebSocket、普通 JSON 响应。
@@ -17,7 +18,9 @@ npm ci --ignore-scripts
 npm run check
 npm pack --ignore-scripts
 # 将生成的 tgz 路径交给 DSH 原生管理器：
-dsh plugin --profile web add /absolute/path/dsh-response-effort-0.2.2.tgz --ignore-scripts
+dsh plugin --profile web add /absolute/path/dsh-response-effort-0.2.3.tgz --ignore-scripts
+# 或直接安装 npm 发布版：
+dsh plugin --profile web add dsh-response-effort@0.2.3 --ignore-scripts
 ```
 
 bundle 默认 `enabled: false`、`targets: []`。安装后还需要在本插件配置中打开观测并明确白名单，例如：
@@ -105,9 +108,9 @@ Responses 的 `reasoning.summary` 本版不采集。`reasoning_tokens` 为 0 不
 
 ## npm 发布（维护者）
 
-npm 包 `dsh-response-effort` 为公开包；GitHub 源仓库保持私有。公开包包含构建产物、声明文件及当前构建生成的 source maps，并不对这些内容保密。
+npm 包 `dsh-response-effort` 为公开包。公开包包含构建产物、声明文件及当前构建生成的 source maps，并不对这些内容保密。GitHub 仓库可见性独立于发布流程，发布不会修改它。
 
-[发布工作流](.github/workflows/publish.yml)使用 GitHub-hosted runner、Node 24 与 npm 11.19.0，通过 OIDC 发布，不需要 `NPM_TOKEN` / `NODE_AUTH_TOKEN` secret。私有源仓库不支持 npm provenance，因此明确关闭 provenance；这不影响 OIDC 认证。
+[发布工作流](.github/workflows/publish.yml)使用 GitHub-hosted runner、Node 24 与 npm 11.19.0，通过 OIDC 发布，不需要 `NPM_TOKEN` / `NODE_AUTH_TOKEN` secret。流程最初按私有源仓库配置，保留 `provenance: false`；这不影响 OIDC 认证，也不要求仓库保持私有。
 
 首次发布需要维护者 `npm login --auth-type=web` 并手动发布当前版本，之后在 npm 包 Settings → Trusted Publisher 绑定：
 

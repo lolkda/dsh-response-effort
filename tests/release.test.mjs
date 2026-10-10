@@ -1,6 +1,17 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { readFileSync } from 'node:fs';
 import { validateContext, validatePack } from '../scripts/verify-release.mjs';
+
+test('release manifest and lockfile do not impose a DSH runtime version gate', () => {
+  const manifest = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+  const lockfile = JSON.parse(readFileSync(new URL('../package-lock.json', import.meta.url), 'utf8'));
+  for (const entry of [manifest, lockfile.packages['']]) {
+    assert.equal(entry.peerDependencies?.['@deepseek-ai/dsh'], undefined);
+    assert.equal(entry.peerDependenciesMeta?.['@deepseek-ai/dsh'], undefined);
+  }
+  assert.equal(manifest.engines.node, '>=24');
+});
 
 function context() {
   return {

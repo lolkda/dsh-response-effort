@@ -1,5 +1,14 @@
 # Responses Effort 验收记录
 
+## 0.2.3 取消 DSH 版本门禁
+
+- 移除发行包与 lockfile 根的 DSH peer 版本限制及 optional 元数据，保留 Node.js >=24。不设置 profile 版本豁免，不修改 DSH 或插件运行时代码。
+- 开发与回归基线为 DSH 0.2.1-alpha.2、Cordis 4.0.5-alpha.1、Schemastery 3.18.5-alpha.1、pi-ai 1.1.0；完整 `npm run check` 通过：49 项测试、类型检查、构建、笔记校验。新增版本门禁回归在修复前失败、修复后通过。
+- 已通过发布上下文校验、Client JavaScript 语法检查和真实 `npm pack` 文件白名单检查。两个目标插槽及 Host 事件已由实时 Inspect 核对。
+- 本地检查使用合成 SSE，不能替代真实上游或浏览器验收。GitHub/npm 发布与安装结果在完成后补充；不因本地测试通过声称已部署。
+- 原有插件配置为 enabled=true，并仅观察已配置的 cpa Responses 端点；升级应保留该配置。
+
+
 ## 0.2.0 逐次响应状态栏
 
 - 已实现输入框上方原生 `conversation.input.dock` 摘要，`response-effort` / order 30。默认折叠、可展开查看逐次响应、按最近完成顺序显示、每次追加 20 条可见记录；保留最终消息标签。

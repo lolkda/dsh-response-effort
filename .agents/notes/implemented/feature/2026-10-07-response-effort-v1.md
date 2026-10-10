@@ -8,7 +8,7 @@ Responses SSE 的 `response.completed.response.reasoning.effort` 存在，但当
 
 ## Decision
 
-独立的 dsh-response-effort Host/Web bundle 使用网络层观测与原生 UI 插槽，兼容目标为 DSH 0.2.0-rc.2，交付版本为 0.2.0。Host 使用 llm/stream 的 AsyncLocalStorage 与严格 provider/端点白名单包装 globalThis.fetch；原 Response、请求参数、错误及上游取消语义不变。前端不改 DOM 或原生消息 renderer。
+独立的 dsh-response-effort Host/Web bundle 使用网络层观测与原生 UI 插槽。[版本门禁决策](../bug-fix/2026-10-11-unrestricted-dsh-runtime.md)取代原先 DSH 0.2.0-rc.2 的精确兼容声明；当前开发与回归基线为 DSH 0.2.1-alpha.2，发行包不设置 DSH peer 门禁。Host 使用 llm/stream 的 AsyncLocalStorage 与严格 provider/端点白名单包装 globalThis.fetch；原 Response、请求参数、错误及上游取消语义不变。前端不改 DOM 或原生消息 renderer。
 
 ### 数据与消息归属
 
